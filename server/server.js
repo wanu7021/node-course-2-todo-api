@@ -44,6 +44,22 @@ app.get('/todos/:id', (req, res) => {
   });
 });
 
+app.delete('/todos/:id', (req, res) => {
+  const id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send({});
+  } 
+  Todo.findByIdAndDelete(id).then( todoRemoved => {
+    if (todoRemoved) {
+      res.send({todoRemoved});
+    } else {
+      res.status(404).send({});
+    }
+    }).catch( e => {
+      res.status(400).send(e);
+  });
+});
+
 app.post('/users', (req, res) => {
   const user = new User(req.body);
   user.save().then((doc) => {
