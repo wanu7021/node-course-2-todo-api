@@ -5,9 +5,11 @@ const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 
 const todos = [{
-  text: 'First test todo'
+    _id: '5a7dc0604b04f9cb7f3fec5e',
+    text: 'First test todo'
   }, {
-  text: 'Second test todo'
+    _id: '5a7dc0604b04f9cb7f3fec5f',
+    text: 'Second test todo'
 }];
 
 beforeEach( done => {
@@ -65,6 +67,40 @@ describe('GET /todos', () => {
       .expect( res => {
         expect(res.body.todos.length).toBe(2)
       })
-      .end(done)
+      .end(done);
   })
 });
+
+describe('GET /todos/:id', () => {
+  it('should return todo doc', done => {
+    request(app)
+      .get(`/todos/${todos[0]._id}`)
+      .expect(200)
+      .expect( res => {
+        expect(res.body.todo.text).toBe(todos[0].text);
+      })
+      .end(done);
+  });
+
+  it('should return 404 if todo not found', done => {
+    const hexId = new ObjectId().toHexString();
+    request(app)
+      .get('/todos/hexId')
+      .expect(404)
+      .expect( res => {
+        expect(res.body).toEqual({});
+      })
+      .end(done);
+  });
+
+  it('should return 404 for non-object ids', done => {
+    request(app)
+      .get('/todos/123abc')
+      .expect(404)
+      .expect( res => {
+        expect(res.body).toEqual({});
+      })
+      .end(done);
+  })
+});
+
