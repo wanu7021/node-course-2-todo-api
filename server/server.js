@@ -49,7 +49,7 @@ app.delete('/todos/:id', (req, res) => {
   if (!ObjectID.isValid(id)) {
     return res.status(404).send({});
   } 
-  Todo.findByIdAndDelete(id).then( todoRemoved => {
+  Todo.findByIdAndRemove(id).then( todoRemoved => {
     if (todoRemoved) {
       res.send({todoRemoved});
     } else {
